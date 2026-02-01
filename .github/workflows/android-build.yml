@@ -1,39 +1,52 @@
 name: Android CI
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual run
   push:
     tags:
-      - 'v*'
+      - 'v*' # Trigger on tags
   pull_request:
     branches: [ "main" ]
+
+permissions:
+  contents: write
 
 jobs:
   android-build:
     runs-on: ubuntu-latest
+    
     steps:
     - uses: actions/checkout@v4
+    
     - name: set up JDK
       uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'temurin'
         cache: gradle
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
     - name: Build with Gradle
-      run: ./gradlew build assembleRelease
+      # Note: Ensure your app/build.gradle uses signingConfig signingConfigs.debug 
+      # inside the release buildType, otherwise this APK will be unsigned and uninstallable.
+      run: ./gradlew assembleRelease
+
     - name: Rename APK
       run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/ExpirationDate.apk
+
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ExpirationDate-APK
+        path: app/build/outputs/apk/release/ExpirationDate.apk
+
     - name: Release APK
       uses: softprops/action-gh-release@v2
-      if: startsWith(github.ref, 'refs/tags/') # Only runs if a tag triggered the workflow
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        files: |
-          app/build/outputs/apk/release/app-release.apk
+        files: app/build/outputs/apk/release/ExpirationDate.apk
         generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-permissions:
-  contents: write
