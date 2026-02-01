@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name" translatable="false">ExpirationDate</string>
+    <string name="app_settings">Settings</string>
+    <string name="add_list_button">Add List</string>
+    <string name="list_name">List name</string>
+    <string name="info_button">List infos</string>
+    <string name="rename_list_hint">Rename list</string>
+    <string name="rename_list_menu">Rename list</string>
+    <string name="remove_list_menu">Remove list</string>
+    <string name="remove_list">Are you sure you want to remove the list?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ok">OK</string>
+    <string name="add_item_button">Add new item</string>
+    <string name="new_item">Insert item</string>
+    <string name="item_name_label">Name</string>
+    <string name="item_quantity_label">Quantity</string>
+    <string name="decrease_quantity_button">Decrease quantity</string>
+    <string name="increase_quantity_button">Increase quantity</string>
+    <string name="item_expiration_date_label">Expiration date</string>
+    <string name="item_expirable">Is expirable</string>
+    <string name="edit_item_button">Edit item</string>
+    <string name="remove_item">Remove item</string>
+    <string name="pantry">Pantry</string>
+    <string name="clear_list">Clear list</string>
+    <string name="error_delete_pantry">Can\'t delete Pantry!</string>
+    <string name="ok_button">OK</string>
+    <string name="earlyNotificationDays">Early notification for expiration date</string>
+    <string name="days">Days</string>
+    <string name="hours">Hours</string>
+    <string name="default_expiration_date">Default days from expiry</string>
+    <string name="expiration_notification">is expiring soon!</string>
+    <string name="message_add_item">Remember:\nremove item from both list and Pantry.</string>
+    <string name="take_picture">Take picture</string>
+    <string name="open_patry_button">Open pantry</string>
+    <string name="fresh">Fresh</string>
+    <string name="expiring">Expiring</string>
+    <string name="expired">Expired</string>
+    <string name="camera_permission_required">Camera permission required</string>
+    <string name="pick_date">Pick a date</string>
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_settings">Impostazioni</string>
+    <string name="add_list_button">Aggiungi lista</string>
+    <string name="list_name">Nome</string>
+    <string name="info_button">Opzioni della lista</string>
+    <string name="rename_list_hint">Rinomina lista</string>
+    <string name="rename_list_menu">Rinomina lista</string>
+    <string name="remove_list_menu">Rimuovi lista</string>
+    <string name="remove_list">Sei sicuro di voler rimuovere la lista?</string>
+    <string name="yes">Sì</string>
+    <string name="no">No</string>
+    <string name="ok">OK</string>
+    <string name="add_item_button">Aggiungi un nuovo elemento</string>
+    <string name="new_item">Nome dell\'elemento</string>
+    <string name="item_name_label">Nome</string>
+    <string name="item_quantity_label">Quantità</string>
+    <string name="decrease_quantity_button">Diminuisci la quantità</string>
+    <string name="increase_quantity_button">Aumenta la quantità</string>
+    <string name="item_expiration_date_label">Data di scadenza</string>
+    <string name="item_expirable">Ha scadenza</string>
+    <string name="edit_item_button">Modifica elemento</string>
+    <string name="remove_item">Rimuovi elemento</string>
+    <string name="pantry">Dispensa</string>
+    <string name="clear_list">Svuota lista</string>
+    <string name="error_delete_pantry">Non puoi eliminare la dispensa!</string>
+    <string name="ok_button">OK</string>
+    <string name="earlyNotificationDays">Notifica di preavviso per la scadenza</string>
+    <string name="days">Giorni</string>
+    <string name="hours">Ore</string>
+    <string name="default_expiration_date">Giorni mancanti alla scadenza</string>
+    <string name="expiration_notification">sta per scadere!</string>
+    <string name="message_add_item">Ricorda\\nRimuovi l\'elemento sia dalla lista che dalla dispensa.</string>
+    <string name="take_picture">Scatta una foto</string>
+    <string name="open_patry_button">Apri la dispensa</string>
+    <string name="fresh">Fresco</string>
+    <string name="expiring">In scadenza</string>
+    <string name="expired">Scaduto</string>
+    <string name="camera_permission_required">È richiesto l\'uso della fotocamera</string>
+    <string name="pick_date">Scegli una data</string>
+</resources>
