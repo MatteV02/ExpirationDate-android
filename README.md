@@ -1,6 +1,6 @@
 ![ExpirationDate](assets/ExpirationDate-banner.png)
 
-# EspirationDate
+# ExpirationDate
 **ExpirationDate** is an Android mobile application which simplifies **shopping list** and **expiration date management**.  
 Here are the main features of this app:
 - **Notification** for close expiry dates
