@@ -17,4 +17,4 @@ Here are the main features of this app:
 
 ## Credits
 Expiration Date features date detection model from **krishuggingface**: [Hugging Face](https://huggingface.co/krishuggingface/Expiry_Date_Detection/tree/main).  
-It is possible to find the detection mode license at [LICENSE-expiry-date-detection-model.md](LICENSE-expiry-date-detection-model.md).  
+It is possible to find the detection mode license at [LICENSE_detection-model.md](LICENSE_detection-model.md).  
