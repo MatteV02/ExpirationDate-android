@@ -9,6 +9,10 @@ import androidx.core.app.NotificationCompat
 import com.mattev02.expirationdate.ItemDetailActivity
 import com.mattev02.expirationdate.R
 
+/**
+ * A broadcast is received when the Alarm set by NotificationHelper is up.
+ * This class generates the notification.
+ */
 class ExpiryNotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val itemName = intent.getStringExtra("ITEM_NAME") ?: "Item"

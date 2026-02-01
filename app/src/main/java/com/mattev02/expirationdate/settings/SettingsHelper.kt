@@ -3,6 +3,9 @@ package com.mattev02.expirationdate.settings
 import android.content.Context
 import androidx.core.content.edit
 
+/**
+ * Object class for app shared preference management.
+ */
 object SettingsHelper {
     const val SETTINGS_FILE = "appSettings"
     const val EARLY_NOTIFICATION_DAY = "early_notification_day"

@@ -22,6 +22,10 @@ import java.util.Locale
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * Class for Expiry date detection.
+ * It combines an OCR model and a YOLOv8 model for detecting the expiry date position and reading it.
+ */
 class DateDetector(private val context: Context) {
     private var interpreter: Interpreter? = null
     private val inputSize = 640
@@ -29,6 +33,9 @@ class DateDetector(private val context: Context) {
     // Store the model's expected input type (Float32, Uint8, or Int8)
     private var inputDataType: DataType = DataType.FLOAT32
 
+    /**
+     * Utility class for detections.
+     */
     data class Detection(
         val box: FloatArray,
         val confidence: Float,
@@ -52,6 +59,9 @@ class DateDetector(private val context: Context) {
         }
     }
 
+    /**
+     * Loads the model via Java NIO.
+     */
     fun loadModel() {
         if (interpreter == null) {
             try {
@@ -76,6 +86,9 @@ class DateDetector(private val context: Context) {
         }
     }
 
+    /**
+     * Preprocess the image and handles the model quantization.
+     */
     private fun preprocessBitmap(bitmap: Bitmap): ByteBuffer {
         val scaledBitmap = bitmap.scale(inputSize, inputSize, false)
 
@@ -108,6 +121,9 @@ class DateDetector(private val context: Context) {
         return byteBuffer
     }
 
+    /**
+     * Run YOLO inference.
+     */
     private fun runYoloInference(input: ByteBuffer): Array<Array<FloatArray>>? {
         return try {
             val output = Array(1) { Array(5) { FloatArray(8400) } }
@@ -119,6 +135,9 @@ class DateDetector(private val context: Context) {
         }
     }
 
+    /**
+     * Process the YOLO output and return a list of detections.
+     */
     private fun processYoloOutput(output: Array<Array<FloatArray>>, imgWidth: Int, imgHeight: Int): List<Detection> {
         val detections = mutableListOf<Detection>()
         val rawData = output[0]
@@ -159,6 +178,9 @@ class DateDetector(private val context: Context) {
         return detections
     }
 
+    /**
+     * Performs OCR and returns the read text.
+     */
     private fun performOCR(bitmap: Bitmap, box: FloatArray): String {
         val imgWidth = bitmap.width
         val imgHeight = bitmap.height
@@ -189,6 +211,9 @@ class DateDetector(private val context: Context) {
         }
     }
 
+    /**
+     * Parse date from OCR output.
+     */
     private fun extractDate(text: String): String? {
         val patterns = listOf(
             Regex("""\d{1,2}[/.-]\d{1,2}[/.-]\d{2,4}"""),
@@ -205,6 +230,9 @@ class DateDetector(private val context: Context) {
         return null
     }
 
+    /**
+     * Converts date from many formats to dd/mm/yyyy
+     */
     private fun convertDateToStandardFormat(dateString: String): String {
         val standardFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val possibleFormats = listOf(
@@ -235,6 +263,9 @@ class DateDetector(private val context: Context) {
         return dateString
     }
 
+    /**
+     * Runs expiry date detection pipeline
+     */
     fun detectAndExtractText(bitmap: Bitmap): String? {
         val input = preprocessBitmap(bitmap)
         val output = runYoloInference(input) ?: return null
@@ -256,6 +287,9 @@ class DateDetector(private val context: Context) {
         return null
     }
 
+    /**
+     * Frees the detector resources.
+     */
     fun close() {
         interpreter?.close()
     }

@@ -37,8 +37,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+/**
+ * App homepage
+ */
 class MainActivity : AppCompatActivity() {
     private var lists = mutableListOf<ItemList>()
+
+    // This variable is used from the RecycleView
     private val adapter = ItemListViewAdapter(lists,
         {item, context -> renameItemList(item, context)},
         {item, context -> removeItemList(item, context)}
@@ -116,14 +121,12 @@ class MainActivity : AppCompatActivity() {
             val warningThreshold = today.plusDays(SettingsHelper.getEarlyNotificationDay(this@MainActivity).toLong())
 
             for (item in pantryItems) {
-                if (item.expirationDate != null) {
+                if (item.expirationDate != null && item.isExpirable) {
                     when {
                         item.expirationDate!!.isBefore(today) -> expiredCount++
                         item.expirationDate!!.isBefore(warningThreshold) -> expiringSoonCount++
                         else -> freshCount++
                     }
-                } else {
-                    freshCount++
                 }
             }
             lifecycleScope.launch(Dispatchers.Main) {
@@ -132,16 +135,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Utility for creating a list.
+     * The new list is automatically added to database.
+     */
     private fun addList(itemList: ItemList? = null) {
         val newItemList: ItemList = itemList ?: ItemListDatabase(ItemList(""))
         if (itemList == null) {
             renameItemList(newItemList, this)
         }
-        ItemListDao.create(newItemList)
         lists.add(newItemList)
         adapter.notifyItemChanged(lists.size-1)
     }
 
+    /**
+     * Utility for renaming a list.
+     * Creates an alert dialog for prompting new name.
+     */
     private fun renameItemList(itemList: ItemList, context: Context) {
         val alertDialogBuilder = MaterialAlertDialogBuilder(context)
         val editText = EditText(context)
@@ -159,6 +169,10 @@ class MainActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
+    /**
+     * Utility for list deleting.
+     * It prompts the user every item list deletion.
+     */
     private fun removeItemList(itemList: ItemList, context: Context) {
         val alertDialogBuilder = MaterialAlertDialogBuilder(context)
         val textLabel = TextView(context)
@@ -177,6 +191,9 @@ class MainActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
+    /**
+     * This function setups the pie chart aesthetic behaviour.
+     */
     private fun setupPieChart() {
         pieChart.apply {
             description.isEnabled = false
@@ -203,6 +220,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * This function fills the pie chart.
+     */
     private fun updateChartData(fresh: Int, expiring: Int, expired: Int) {
         val entries = ArrayList<PieEntry>()
         val colors = ArrayList<Int>()
@@ -256,6 +276,9 @@ class MainActivity : AppCompatActivity() {
         pieChart.invalidate()
     }
 
+    /**
+     * This utility function opens the list detail view for the pantry.
+     */
     private fun openPantry() {
         val intent = Intent(this, ListDetailActivity::class.java)
         intent.putExtra("listId", 42)

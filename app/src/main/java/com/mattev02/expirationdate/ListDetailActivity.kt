@@ -25,12 +25,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+/**
+ * List Detail application view
+ */
 class ListDetailActivity : AppCompatActivity() {
-    var itemList: ItemList = ItemList("")
-    var adapter = ItemViewAdapter(itemList.list, itemList.id)
-    lateinit var toolbar: MaterialToolbar
+    private var itemList: ItemList = ItemList("")
 
-    var listId : Int? = null
+    // This variable is used from the RecycleView
+    private val adapter = ItemViewAdapter(itemList.list, itemList.id, lifecycleScope)
+    private lateinit var toolbar: MaterialToolbar
+    private var listId : Int? = null
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +102,11 @@ class ListDetailActivity : AppCompatActivity() {
         }
     }
 
-    fun addItem() {
+    /**
+     * Utility function for item creation.
+     * The created item is automatically synced with the DB.
+     */
+    private fun addItem() {
         val newItem = Item(expirationDate = LocalDate.now().plusDays(SettingsHelper.getDefaultExpirationDay(this).toLong()))
         if (itemList.id == 42) {
             newItem.taken = true
@@ -107,7 +115,11 @@ class ListDetailActivity : AppCompatActivity() {
         adapter.notifyItemInserted(itemList.list.size - 1)
     }
 
-    fun renameList(view: View) {
+    /**
+     * Utility function for list renaming.
+     * Show a dialog for prompting the new name.
+     */
+    private fun renameList(view: View) {
         val context = view.context
         val alertDialogBuilder = AlertDialog.Builder(context)
         val editText = EditText(context)
@@ -123,7 +135,11 @@ class ListDetailActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
-    fun removeList(view: View) {
+    /**
+     * Utility function for list removal.
+     * Shows a confirmation dialog.
+     */
+    private fun removeList(view: View) {
         val context = view.context
         val alertDialogBuilder = AlertDialog.Builder(context)
         val textLabel = TextView(context)

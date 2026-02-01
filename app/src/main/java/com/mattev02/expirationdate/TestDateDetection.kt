@@ -19,6 +19,9 @@ import androidx.exifinterface.media.ExifInterface
 import com.mattev02.expirationdate.date_detection.DateDetector
 import java.io.File
 
+/**
+ * Activity for DateDetector testing.
+ */
 class TestDateDetection : AppCompatActivity() {
     private lateinit var dateDetector: DateDetector
     private lateinit var textView: TextView

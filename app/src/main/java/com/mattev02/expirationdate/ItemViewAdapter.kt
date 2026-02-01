@@ -17,22 +17,29 @@ import com.google.android.material.textfield.TextInputLayout
 import com.mattev02.expirationdate.itemlist.Item
 import com.mattev02.expirationdate.itemlist.database.ItemDatabase
 import com.mattev02.expirationdate.itemlist.database.ItemListDao
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 
-
+/**
+ * This class is used from the RecycleView in ListDetailActivity for showing a list of items inside
+ * a certain list.
+ */
 class ItemViewAdapter(
     var dataSet: MutableList<Item>,
-    var itemListId: Int
+    var itemListId: Int,
+    val lifecycleScope: CoroutineScope
 ) :
     RecyclerView.Adapter<ItemViewAdapter.ViewHolder>() {
 
     /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder)
+     * ViewHolder customization for showing an item.
      */
     class ViewHolder(
         view: View,
-        private val itemListId: Int
+        private val itemListId: Int,
+        val lifecycleScope: CoroutineScope
     ) : RecyclerView.ViewHolder(view) {
         // Define click listener for the ViewHolder's View
         val takeItemRadio: CheckBox = view.findViewById(R.id.take_item_radio)
@@ -49,7 +56,8 @@ class ItemViewAdapter(
             takeItemRadio.setOnCheckedChangeListener { view, status ->
                 item?.taken = status
                 if (status) {
-                    Thread {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        // create a new item inside the pantry
                         val pantryItem =
                             ItemListDao.read(42)?.list?.find { it.name == item?.name || it.id == item?.id }
                         if (pantryItem == null) {
@@ -65,8 +73,9 @@ class ItemViewAdapter(
                                 )
                             }
                         }
-                    }.start()
+                    }
                 }
+                // enable/disable fields
                 if (status && itemListId != 42) {
                     quantity.inputType = InputType.TYPE_NULL
                     itemName.inputType = InputType.TYPE_NULL
@@ -108,6 +117,7 @@ class ItemViewAdapter(
                 view.context.startActivity(intent)
             }
 
+            // show/hide quantity and expirationDate fields
             if (itemListId == 42) {
                 quantityLayout.visibility = View.GONE
             } else {
@@ -115,6 +125,7 @@ class ItemViewAdapter(
             }
 
             if ((item?.taken ?: false) && itemListId != 42) {
+                // disable fields
                 quantity.inputType = InputType.TYPE_NULL
                 itemName.inputType = InputType.TYPE_NULL
             }
@@ -123,24 +134,25 @@ class ItemViewAdapter(
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.item_view, viewGroup, false)
 
-        return ViewHolder(view, itemListId)
+        return ViewHolder(view, itemListId, lifecycleScope)
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
         val item = dataSet[position]
         viewHolder.item = item
         viewHolder.itemName.setText(item.name)
         viewHolder.quantity.setText(item.quantity.toString())
         viewHolder.expirationDateLabel.text = item.expirationDate?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         viewHolder.takeItemRadio.isChecked = item.taken
+        if (!item.isExpirable) {
+            viewHolder.expirationDateLabel.visibility = View.GONE
+        } else {
+            viewHolder.expirationDateLabel.visibility = View.VISIBLE
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

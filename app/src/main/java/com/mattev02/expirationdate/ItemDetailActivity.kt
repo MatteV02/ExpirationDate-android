@@ -48,10 +48,13 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+/**
+ * Item detail app view.
+ */
 class ItemDetailActivity : AppCompatActivity() {
 
-    var item = Item()
-    var itemList = ItemList()
+    private var item = Item()
+    private var itemList = ItemList()
 
     private lateinit var dateDetector: DateDetector
     private lateinit var photoUri: Uri
@@ -75,7 +78,7 @@ class ItemDetailActivity : AppCompatActivity() {
             insets
         }
 
-        // Initialize Channel via Helper
+        // Initialize a notification channel via NotificationHelper
         NotificationHelper.createNotificationChannel(this)
 
         dateDetector = DateDetector(this)
@@ -178,6 +181,9 @@ class ItemDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Update Item visualization
+     */
     private fun updateItem(item: Item) {
         if (!item.taken) {
             findViewById<LinearLayout>(R.id.expiration_date_layout).visibility = View.GONE
@@ -203,7 +209,9 @@ class ItemDetailActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    // Permission launcher for Android 13+ Notifications
+    /**
+     * Receives notification permission answer.
+     */
     private val requestNotificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
@@ -212,6 +220,9 @@ class ItemDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Check notification permissions and add a notification schedule.
+     */
     private fun checkNotificationPermissionAndSchedule() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
@@ -224,6 +235,9 @@ class ItemDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Shows date picker
+     */
     private fun showDatePicker() {
         val datePickerBuilder = MaterialDatePicker.Builder.datePicker()
         datePickerBuilder.setTitleText(R.string.pick_date)
@@ -248,18 +262,18 @@ class ItemDetailActivity : AppCompatActivity() {
         datePicker.show(supportFragmentManager, "DATE_PICKER_TAG")
     }
 
+    /**
+     * Receives camera permission answer.
+     */
     private val requestCameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) takePicture() else Toast.makeText(this, R.string.camera_permission_required, Toast.LENGTH_SHORT).show()
     }
 
-    private val takePictureLauncher = registerForActivityResult(
-        ActivityResultContracts.TakePicture()
-    ) { success: Boolean ->
-        if (success) processCapturedImage()
-    }
-
+    /**
+     * Check camera permission and takes the picture.
+     */
     private fun checkPermissionAndOpenCamera() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             takePicture()
@@ -268,6 +282,9 @@ class ItemDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Take a picture.
+     */
     private fun takePicture() {
         tempFile = File.createTempFile("photo_", ".jpg", cacheDir)
         photoUri = FileProvider.getUriForFile(this, "${applicationContext.packageName}.provider", tempFile)
@@ -277,6 +294,18 @@ class ItemDetailActivity : AppCompatActivity() {
         takePictureLauncher.launch(photoUri)
     }
 
+    /**
+     * Invoked at the end of take picture activity.
+     */
+    private val takePictureLauncher = registerForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { success: Boolean ->
+        if (success) processCapturedImage()
+    }
+
+    /**
+     * Process the taken picture.
+     */
     private fun processCapturedImage() {
         progressBar.visibility = View.VISIBLE
         takePictureButton.visibility = View.GONE
@@ -293,10 +322,14 @@ class ItemDetailActivity : AppCompatActivity() {
                     takePictureButton.visibility = View.VISIBLE
                 }
                 tempFile.delete()
-            } catch (e: Exception) { Log.e("OCR", "Error: ${e.message}") }
+            } catch (e: Exception) { Log.e("ItemDetailActivity", "Error: ${e.message}") }
         }
     }
 
+    /**
+     * Sometimes image could be rotated.
+     * Adjust picture orientation if needed.
+     */
     private fun rotateBitmapIfRequired(bitmap: Bitmap, path: String): Bitmap {
         val ei = ExifInterface(path)
         val orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)

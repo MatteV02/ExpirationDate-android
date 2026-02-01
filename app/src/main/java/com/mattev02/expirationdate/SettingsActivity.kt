@@ -10,6 +10,9 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputEditText
 import com.mattev02.expirationdate.settings.SettingsHelper
 
+/**
+ * Activity for application setting management.
+ */
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +33,9 @@ class SettingsActivity : AppCompatActivity() {
         earlyDayTextInput.doOnTextChanged { text, start, before, count ->
             try {
                 val nDays = text.toString().toInt()
+                if (nDays < 0) {
+                    throw NumberFormatException("Days should be positive")
+                }
                 SettingsHelper.setEarlyNotificationDay(nDays, this)
             } catch (_ : NumberFormatException) {}
         }
@@ -39,6 +45,9 @@ class SettingsActivity : AppCompatActivity() {
         earlyHourTextInput.doOnTextChanged { text, start, before, count ->
             try {
                 val nHour = text.toString().toInt()
+                if (0 > nHour || nHour > 24) {
+                    throw NumberFormatException("Hours should be in [0, 24]")
+                }
                 SettingsHelper.setEarlyNotificationHour(nHour, this)
             } catch (_ : NumberFormatException) {}
         }
@@ -48,6 +57,9 @@ class SettingsActivity : AppCompatActivity() {
         defaultDaysExpirationTextInput.doOnTextChanged { text, start, before, count ->
             try {
                 val nDays = text.toString().toInt()
+                if (nDays < 0) {
+                    throw NumberFormatException("Days should be positive")
+                }
                 SettingsHelper.setDefaultExpirationDay(nDays, this)
             } catch (_ : NumberFormatException) {}
         }

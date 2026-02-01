@@ -12,12 +12,18 @@ import com.mattev02.expirationdate.itemlist.Item
 import com.mattev02.expirationdate.settings.SettingsHelper
 import java.time.ZoneId
 
+/**
+ * Manages notification timing.
+ */
 object NotificationHelper {
 
     private const val CHANNEL_ID = "EXPIRY_CHANNEL_ID"
     private const val CHANNEL_NAME = "Expiration Alerts"
     private const val CHANNEL_DESC = "Notifications for expiring items"
 
+    /**
+     * Creates a notification channel for the app.
+     */
     fun createNotificationChannel(context: Context) {
         val importance = NotificationManager.IMPORTANCE_HIGH
         val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance).apply {
@@ -27,6 +33,9 @@ object NotificationHelper {
         notificationManager.createNotificationChannel(channel)
     }
 
+    /**
+     * Schedules a new notification for a certain item.
+     */
     fun scheduleNotification(context: Context, item: Item) {
         if (item.expirationDate == null || !item.taken) return
 
@@ -69,6 +78,9 @@ object NotificationHelper {
         }
     }
 
+    /**
+     * Cancels an existing notification.
+     */
     fun cancelNotification(context: Context, item: Item) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, ExpiryNotificationReceiver::class.java)
